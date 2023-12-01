@@ -13,7 +13,11 @@ target_link_libraries(${PROJECT_NAME} GL dl glfw)
 
 add_custom_target(
   copy_shader_files
-  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/src/shader
-  ${CMAKE_CURRENT_BINARY_DIR}/shader)
+  COMMAND
+    ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/src/shader
+    ${CMAKE_CURRENT_BINARY_DIR}/shader
+  COMMAND
+    ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/src/assert
+    ${CMAKE_CURRENT_BINARY_DIR}/assert)
 
 add_dependencies(${PROJECT_NAME} copy_shader_files)

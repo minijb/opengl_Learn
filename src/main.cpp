@@ -58,11 +58,13 @@ int main() {
 
   glBindVertexArray(0);
 
-  // texture
-  unsigned int textureID;
-  glGenTextures(1, &textureID);
+  stbi_set_flip_vertically_on_load(true);
 
-  glBindTexture(GL_TEXTURE_2D, textureID);
+  // texture
+  unsigned int texture1, texture2;
+  glGenTextures(1, &texture1);
+
+  glBindTexture(GL_TEXTURE_2D, texture1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
@@ -83,6 +85,32 @@ int main() {
   }
   stbi_image_free(data);
 
+  glGenTextures(1, &texture2);
+
+  glBindTexture(GL_TEXTURE_2D, texture2);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // get jpg
+  data = stbi_load("./assert/awesomeface.png", &width, &height, &nChannels, 0);
+
+  if (data) {
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+  } else {
+    std::cout << "TEXTURE :: image load failed" << std::endl;
+  }
+  stbi_image_free(data);
+
+  // activate texture unit in shaderProgram
+  shaderProgram.use();
+  shaderProgram.setInt("texture1", 0);
+  shaderProgram.setInt("texture2", 1);
+
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
 
@@ -91,7 +119,12 @@ int main() {
 
     shaderProgram.use();
     glBindVertexArray(VAO);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glfwSwapBuffers(window);
     glfwPollEvents();

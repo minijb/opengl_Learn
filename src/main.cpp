@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 #include <math.h>
 #include <string>
+#include <vector>
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -57,8 +58,6 @@ int main() {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
-
-  stbi_set_flip_vertically_on_load(true);
 
   // texture
   unsigned int texture1, texture2;

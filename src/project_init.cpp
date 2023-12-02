@@ -1,4 +1,5 @@
 #include "project_init.h"
+#include "stb_image.h"
 #include <callBack.h>
 
 void glfwProjectInit() {
@@ -6,6 +7,7 @@ void glfwProjectInit() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  stbi_set_flip_vertically_on_load(true);
 }
 
 GLFWwindow *windowCreate(int width, int height) {

@@ -1,5 +1,6 @@
 #include "texture.h"
 #include "sstream"
+#include "stb_image.h"
 #include <glad/glad.h>
 #include <iostream>
 #include <string>
@@ -26,7 +27,7 @@ Texture::Texture(const char *texturePath) {
 
 void Texture::GenerateTexture(const char *path, const int &width,
                               const int &height, const int &nChannels,
-                              const unsigned char *data) {
+                              unsigned char *data) {
   std::stringstream ss(path);
   std::vector<std::string> s_list;
   std::string item;
@@ -35,11 +36,11 @@ void Texture::GenerateTexture(const char *path, const int &width,
   }
   std::string type = s_list.back();
 
-  if (type.compare("jpg")) {
+  if (!type.compare("jpg")) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                  GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
-  } else if (type.compare("png")) {
+  } else if (!type.compare("png")) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);

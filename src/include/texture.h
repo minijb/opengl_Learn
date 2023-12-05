@@ -8,5 +8,5 @@ public:
 
 private:
   void GenerateTexture(const char *path, const int &width, const int &height,
-                       const int &nChannels, const unsigned char *data);
+                       const int &nChannels, unsigned char *data);
 };

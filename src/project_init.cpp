@@ -33,3 +33,5 @@ void gladInit(GLFWwindow *window, int width, int height) {
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 }
+
+void global_OpenglState() { glEnable(GL_DEPTH_TEST); }

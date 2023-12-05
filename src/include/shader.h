@@ -2,6 +2,7 @@
 #define SHADER_H
 
 #include <glad/glad.h> // 包含glad来获取所有的必须OpenGL头文件
+#include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -30,6 +31,7 @@ public:
   void setFloat(const std::string &name, float value) const;
   void set4Float(const std::string &name, float v1, float v2, float v3,
                  float v4) const;
+  void set4Matrix(const std::string &name, glm::mat4 value) const;
 };
 
 #endif

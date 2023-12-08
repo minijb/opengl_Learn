@@ -43,19 +43,21 @@ int main() {
   // build and compile our shader program
   // ------------------------------------
   Shader vertex("./shader/light/vertex.glsl", 0);
+  Shader lighting("./shader/light/lighting_v.glsl", 0);
   Shader cube_fragment("./shader/light/fragment.glsl", 1);
   Shader lighting_fragment("./shader/light/lighting.glsl", 1);
 
   ShaderP cube_shaderProgram(vertex, cube_fragment);
-  ShaderP lighting_shaderProgram(vertex, lighting_fragment);
+  ShaderP lighting_shaderProgram(lighting, lighting_fragment);
 
   vertex.unUsed();
   cube_fragment.unUsed();
   lighting_fragment.unUsed();
+  lighting.unUsed();
 
-  float *vertices = cube_vertices();
+  float *vertices = cube_vertices_normal();
 
-  Cube cube(vertices, cube_state::without_texture);
+  Cube cube(vertices, cube_state::with_normal);
 
   delete vertices;
 
@@ -85,6 +87,8 @@ int main() {
     cube_shaderProgram.set4Matrix("model", model);
     cube_shaderProgram.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
     cube_shaderProgram.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    cube_shaderProgram.setVec3("lightPos", lightPos);
+    cube_shaderProgram.setVec3("viewPos", camera.Position);
     cube.use();
     glDrawArrays(GL_TRIANGLES, 0, 36);
 

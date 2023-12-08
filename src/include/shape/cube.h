@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 
-enum class cube_state { with_texture, without_texture };
+enum class cube_state { with_texture, without_texture, with_normal };
 
 class Cube {
 public:

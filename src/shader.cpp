@@ -1,4 +1,5 @@
 #include "shader.h"
+#include "glm/ext/vector_float3.hpp"
 #include "tools.h"
 #include <glm/glm.hpp>
 #include <string>
@@ -76,4 +77,9 @@ void ShaderP::set4Matrix(const std::string &name, glm::mat4 value) const {
 }
 void ShaderP::setVec3(const std::string &name, glm::vec3 vec3) const {
   glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vec3));
+}
+
+void ShaderP::setVec3(const std::string &name, float v1, float v2,
+                      float v3) const {
+  setVec3(name, glm::vec3(v1, v2, v3));
 }

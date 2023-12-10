@@ -140,9 +140,14 @@ int main() {
     cube_shaderProgram.set4Matrix("view", view);
     cube_shaderProgram.set4Matrix("projection", projection);
     cube_shaderProgram.set4Matrix("model", model);
-    cube_shaderProgram.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-    cube_shaderProgram.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-    cube_shaderProgram.setVec3("lightPos", lightPos);
+    cube_shaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+    cube_shaderProgram.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+    cube_shaderProgram.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    cube_shaderProgram.setFloat("material.shininess", 32.0f);
+    cube_shaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+    cube_shaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+    cube_shaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    cube_shaderProgram.setVec3("light.position", lightPos);
     cube_shaderProgram.setVec3("viewPos", camera.Position);
     cube.use();
     glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -1,5 +1,7 @@
 #include "camera.h"
+#include <GLFW/glfw3.h>
 #include <callBack.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 extern float lastX;
 extern float lastY;
@@ -29,6 +31,11 @@ void processInput(GLFWwindow *window) {
     camera.ProcessKeyboard(LEFT, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     camera.ProcessKeyboard(RIGHT, deltaTime);
+
+  // change mode
+  if (glfwGetKey(window, GLFW_KEY_LEFT_BRACKET) == GLFW_PRESS) {
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+  }
 }
 
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {

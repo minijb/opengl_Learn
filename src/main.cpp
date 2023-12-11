@@ -59,9 +59,9 @@ int main() {
   glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
   // ========= build and compile our shader program =========
-  Shader vertex("./shader/light/vertex.glsl", 0);
+  Shader vertex("./shader/light/vertex_light.glsl", 0);
   Shader lighting("./shader/light/lighting_v.glsl", 0);
-  Shader cube_fragment("./shader/light/fragment.glsl", 1);
+  Shader cube_fragment("./shader/light/fragment_texture.glsl", 1);
   Shader lighting_fragment("./shader/light/lighting.glsl", 1);
 
   // shaderprogram
@@ -75,9 +75,12 @@ int main() {
   lighting.unUsed();
 
   // ========= get cube shape --- with VAO =========
-  float *vertices = cube_vertices_normal();
-  Cube cube(vertices, cube_state::with_normal);
+  float *vertices = cube_vertices_texture_texture();
+  Cube cube(vertices, cube_state::with_normal_texture);
   delete vertices;
+
+  Texture texture1("./assert/container2.png");
+  Texture texture2("./assert/container2_specular.png");
 
   while (!glfwWindowShouldClose(window)) {
 
@@ -140,15 +143,21 @@ int main() {
     cube_shaderProgram.set4Matrix("view", view);
     cube_shaderProgram.set4Matrix("projection", projection);
     cube_shaderProgram.set4Matrix("model", model);
-    cube_shaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    cube_shaderProgram.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-    cube_shaderProgram.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    // cube_shaderProgram.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+    // cube_shaderProgram.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+    // cube_shaderProgram.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
     cube_shaderProgram.setFloat("material.shininess", 32.0f);
+    cube_shaderProgram.setInt("material.diffuse", 0);
+    cube_shaderProgram.setInt("material.specular", 1);
     cube_shaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
     cube_shaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
     cube_shaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
     cube_shaderProgram.setVec3("light.position", lightPos);
     cube_shaderProgram.setVec3("viewPos", camera.Position);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1.ID);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2.ID);
     cube.use();
     glDrawArrays(GL_TRIANGLES, 0, 36);
 

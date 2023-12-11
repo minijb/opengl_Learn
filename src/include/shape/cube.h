@@ -1,6 +1,11 @@
 #include <glad/glad.h>
 
-enum class cube_state { with_texture, without_texture, with_normal };
+enum class cube_state {
+  with_texture,
+  without_texture,
+  with_normal,
+  with_normal_texture
+};
 
 class Cube {
 public:

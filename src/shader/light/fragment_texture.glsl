@@ -9,7 +9,9 @@ uniform vec3 viewPos; //摄像机位置
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
+    sampler2D emission;
     float shininess;
+    float emission_strength;
 };
 
 struct Light {
@@ -39,5 +41,16 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = spec * light.specular * vec3(texture(material.specular, TexCoords));
 
-    FragColor = vec4(ambient + diffuse + specular, 1.0);
+    // vec3 emission = texture(material.emission, TexCoords).rgb;
+    vec3 emission = vec3(0.0);
+    if (texture(material.specular, TexCoords).r == 0.0) /*rough check for blackbox inside spec texture */
+    {
+        /*apply emission texture */
+        emission = texture(material.emission, TexCoords).rgb * material.emission_strength;
+
+        // /*some extra fun stuff with "time uniform" */
+        // emission = texture(material.emission, TexCoords + vec2(0.0, 0.5)).rgb; /*moving */
+        // emission = emission * (sin(0.5) * 0.5 + 0.5) * 2.0; /*fading */
+    }
+    FragColor = vec4(ambient + diffuse + specular + emission, 1.0);
 }

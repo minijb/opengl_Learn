@@ -1,6 +1,9 @@
 #include "project_init.h"
 #include "stb_image.h"
+#include <GLFW/glfw3.h>
 #include <callBack.h>
+
+extern GLFW_UserPoint glfw_userpoint;
 
 void glfwProjectInit() {
   glfwInit();
@@ -19,6 +22,7 @@ GLFWwindow *windowCreate(int width, int height) {
     exit(0);
   }
   glfwMakeContextCurrent(window);
+  glfwSetWindowUserPointer(window, &glfw_userpoint);
   return window;
 }
 

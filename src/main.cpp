@@ -19,8 +19,6 @@
 #include <string>
 
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 
 #include "imguiT.h"
 
@@ -31,11 +29,12 @@ float lastX = static_cast<float>(SCR_WIDTH) / 2;
 float lastY = static_cast<float>(SCR_HEIGHT) / 2;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-bool firstMouse = true;
 
 // time
 float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 float lastFrame = 0.0f; // 上一帧的时间
+
+GLFW_UserPoint glfw_userpoint;
 
 int main() {
 
@@ -55,7 +54,6 @@ int main() {
 
   // ========= some useful val =========
   bool show_demo_window = true;
-  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
   glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
   // ========= build and compile our shader program =========
@@ -81,6 +79,10 @@ int main() {
 
   Texture texture1("./assert/container2.png");
   Texture texture2("./assert/container2_specular.png");
+  Texture texture3("./assert/matrix.jpg");
+
+  // IMGUI control
+  float emission_s = 0.5f;
 
   while (!glfwWindowShouldClose(window)) {
 
@@ -92,33 +94,14 @@ int main() {
     glfwPollEvents();
 
     P_imgui::P_Loop_init();
+
     {
       static float f = 0.0f;
       static int counter = 0;
 
-      ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!"
-                                     // and append into it.
-
-      ImGui::Text("This is some useful text."); // Display some text (you can
-                                                // use a format strings too)
-      ImGui::Checkbox(
-          "Demo Window",
-          &show_demo_window); // Edit bools storing our window open/close state
-
-      ImGui::SliderFloat("float", &f, 0.0f,
-                         1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-      ImGui::ColorEdit3(
-          "clear color",
-          (float *)&clear_color); // Edit 3 floats representing a color
-
-      if (ImGui::Button("Button")) // Buttons return true when clicked (most
-                                   // widgets return true when edited/activated)
-        counter++;
-      ImGui::SameLine();
-      ImGui::Text("counter = %d", counter);
-
-      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                  1000.0f / io.Framerate, io.Framerate);
+      ImGui::Begin("Light settings"); // Create a window called "Hello, world!"
+      ImGui::SliderFloat("emission strength", &emission_s, 0.0f, 2.0f,
+                         "strength = %.4f");
       ImGui::End();
     }
 
@@ -127,10 +110,7 @@ int main() {
     glfwGetFramebufferSize(window, &display_w,
                            &display_h); // 放置窗口拉伸导致的形变
 
-    glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w,
-                 clear_color.z * clear_color.w, clear_color.w);
-
-    // glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     cube_shaderProgram.use();
@@ -149,6 +129,8 @@ int main() {
     cube_shaderProgram.setFloat("material.shininess", 32.0f);
     cube_shaderProgram.setInt("material.diffuse", 0);
     cube_shaderProgram.setInt("material.specular", 1);
+    cube_shaderProgram.setInt("material.emission", 2);
+    cube_shaderProgram.setFloat("material.emission_strength", emission_s);
     cube_shaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
     cube_shaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
     cube_shaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
@@ -158,6 +140,8 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, texture1.ID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2.ID);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, texture3.ID);
     cube.use();
     glDrawArrays(GL_TRIANGLES, 0, 36);
 

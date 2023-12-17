@@ -5,6 +5,7 @@
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "imgui.h"
 #include "project_init.h"
 #include "shader.h"
 #include "shape/cube.h"
@@ -17,8 +18,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
-
-#include "imgui.h"
 
 #include "imguiT.h"
 
@@ -54,12 +53,11 @@ int main() {
 
   // ========= some useful val =========
   bool show_demo_window = true;
-  glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
   // ========= build and compile our shader program =========
   Shader vertex("./shader/light/vertex_light.glsl", 0);
   Shader lighting("./shader/light/lighting_v.glsl", 0);
-  Shader cube_fragment("./shader/light/fragment_texture.glsl", 1);
+  Shader cube_fragment("./shader/light/fragment_lights.glsl", 1);
   Shader lighting_fragment("./shader/light/lighting.glsl", 1);
 
   // shaderprogram
@@ -91,6 +89,10 @@ int main() {
       glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
       glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
       glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
+
+  glm::vec3 pointLightPositions[] = {
+      glm::vec3(0.7f, 0.2f, 2.0f), glm::vec3(2.3f, -3.3f, -4.0f),
+      glm::vec3(-4.0f, 2.0f, -12.0f), glm::vec3(0.0f, 0.0f, -3.0f)};
 
   while (!glfwWindowShouldClose(window)) {
 
@@ -137,18 +139,59 @@ int main() {
     cube_shaderProgram.setInt("material.specular", 1);
     cube_shaderProgram.setInt("material.emission", 2);
     cube_shaderProgram.setFloat("material.emission_strength", emission_s);
-    cube_shaderProgram.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    cube_shaderProgram.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    cube_shaderProgram.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-    cube_shaderProgram.setVec3("light.direction", camera.Front);
-    cube_shaderProgram.setVec3("light.position", camera.Position);
-    cube_shaderProgram.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-    cube_shaderProgram.setFloat("light.outerCutOff",
-                                glm::cos(glm::radians(17.5f)));
-    cube_shaderProgram.setFloat("light.constant", 1.0f);
-    cube_shaderProgram.setFloat("light.linear", 0.09f);
-    cube_shaderProgram.setFloat("light.quadratic", 0.032f);
-    cube_shaderProgram.setVec3("viewPos", camera.Position);
+
+    cube_shaderProgram.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    cube_shaderProgram.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    cube_shaderProgram.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    cube_shaderProgram.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+    // point light 1
+    cube_shaderProgram.setVec3("pointLights[0].position",
+                               pointLightPositions[0]);
+    cube_shaderProgram.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+    cube_shaderProgram.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+    cube_shaderProgram.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+    cube_shaderProgram.setFloat("pointLights[0].constant", 1.0f);
+    cube_shaderProgram.setFloat("pointLights[0].linear", 0.09f);
+    cube_shaderProgram.setFloat("pointLights[0].quadratic", 0.032f);
+    // point light 2
+    cube_shaderProgram.setVec3("pointLights[1].position",
+                               pointLightPositions[1]);
+    cube_shaderProgram.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+    cube_shaderProgram.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+    cube_shaderProgram.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+    cube_shaderProgram.setFloat("pointLights[1].constant", 1.0f);
+    cube_shaderProgram.setFloat("pointLights[1].linear", 0.09f);
+    cube_shaderProgram.setFloat("pointLights[1].quadratic", 0.032f);
+    // point light 3
+    cube_shaderProgram.setVec3("pointLights[2].position",
+                               pointLightPositions[2]);
+    cube_shaderProgram.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+    cube_shaderProgram.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+    cube_shaderProgram.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+    cube_shaderProgram.setFloat("pointLights[2].constant", 1.0f);
+    cube_shaderProgram.setFloat("pointLights[2].linear", 0.09f);
+    cube_shaderProgram.setFloat("pointLights[2].quadratic", 0.032f);
+    // point light 4
+    cube_shaderProgram.setVec3("pointLights[3].position",
+                               pointLightPositions[3]);
+    cube_shaderProgram.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+    cube_shaderProgram.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+    cube_shaderProgram.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+    cube_shaderProgram.setFloat("pointLights[3].constant", 1.0f);
+    cube_shaderProgram.setFloat("pointLights[3].linear", 0.09f);
+    cube_shaderProgram.setFloat("pointLights[3].quadratic", 0.032f);
+    // spotLight
+    cube_shaderProgram.setVec3("spotLight.position", camera.Position);
+    // cube_shaderProgram.setVec3("light.position", camera.Position);
+    // cube_shaderProgram.setFloat("light.cutOff",
+    // glm::cos(glm::radians(12.5f)));
+    // cube_shaderProgram.setFloat("light.outerCutOff",
+    //                             glm::cos(glm::radians(17.5f)));
+    // cube_shaderProgram.setFloat("light.constant", 1.0f);
+    // cube_shaderProgram.setFloat("light.linear", 0.09f);
+    // cube_shaderProgram.setFloat("light.quadratic", 0.032f);
+
+    cube_shaderProgram.setVec3("camera.position", camera.Position);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1.ID);
     glActiveTexture(GL_TEXTURE1);
@@ -168,15 +211,17 @@ int main() {
     }
     cube.use();
 
-    glm::mat4 model = glm::mat4(1.0f);
     lighting_shaderProgram.use();
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.2f));
     lighting_shaderProgram.set4Matrix("view", view);
     lighting_shaderProgram.set4Matrix("projection", projection);
-    lighting_shaderProgram.set4Matrix("model", model);
     cube.use();
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (int i = 0; i < 4; i++) {
+      glm::mat4 model = glm::mat4(1.0f);
+      model = glm::translate(model, pointLightPositions[i]);
+      model = glm::scale(model, glm::vec3(0.2f));
+      lighting_shaderProgram.set4Matrix("model", model);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     P_imgui::P_imgui_render();
     glfwSwapBuffers(window);

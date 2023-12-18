@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.6)
 
 project(tri)
 
@@ -17,7 +17,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC src/include)
 target_include_directories(${PROJECT_NAME} PUBLIC source/imgui)
 target_include_directories(${PROJECT_NAME} PUBLIC src/imgui)
-target_link_libraries(${PROJECT_NAME} GL dl glfw)
+target_link_libraries(${PROJECT_NAME} GL dl glfw assimp)
 
 add_custom_target(
   copy_shader_files

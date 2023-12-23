@@ -5,7 +5,6 @@
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
-#include "imgui.h"
 #include "project_init.h"
 #include "shader.h"
 #include "shape/cube.h"
@@ -108,7 +107,7 @@ int main() {
       static float f = 0.0f;
       static int counter = 0;
 
-      ImGui::Begin("Light settings"); // Create a window called "Hello, world!"
+      ImGui::Begin("Light settings"); // Create a window called "Hello,world!"
       ImGui::SliderFloat("emission strength", &emission_s, 0.0f, 2.0f,
                          "strength = %.4f");
       ImGui::End();
